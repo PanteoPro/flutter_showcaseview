@@ -244,6 +244,9 @@ class Showcase extends StatefulWidget {
   /// will still provide a callback.
   final VoidCallback? onBarrierClick;
 
+  /// Builder that builds the end showcase button, he can be Positioned
+  final Widget Function(VoidCallback endShowCase)? endShowCaseButtonBuilder;
+
   const Showcase({
     required this.key,
     required this.description,
@@ -288,6 +291,7 @@ class Showcase extends StatefulWidget {
     this.titleTextDirection,
     this.descriptionTextDirection,
     this.onBarrierClick,
+    this.endShowCaseButtonBuilder,
   })  : height = null,
         width = null,
         container = null,
@@ -325,6 +329,7 @@ class Showcase extends StatefulWidget {
     this.disableDefaultTargetGestures = false,
     this.tooltipPosition,
     this.onBarrierClick,
+    this.endShowCaseButtonBuilder,
   })  : showArrow = false,
         onToolTipClick = null,
         scaleAnimationDuration = const Duration(milliseconds: 300),
@@ -528,14 +533,8 @@ class _ShowcaseState extends State<Showcase> {
                   ),
           ),
         ),
-        Positioned(
-          right: 20,
-          top: 20,
-          child: ElevatedButton(
-            onPressed: showCaseWidgetState.dismiss,
-            child: const Text('Закончить обучение'),
-          ),
-        ),
+        if (widget.endShowCaseButtonBuilder != null)
+          widget.endShowCaseButtonBuilder!.call(showCaseWidgetState.dismiss),
         if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
         if (!_isScrollRunning) ...[
           _TargetWidget(
