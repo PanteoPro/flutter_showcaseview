@@ -83,6 +83,9 @@ class ShowCaseWidget extends StatefulWidget {
   /// Enable/disable showcase globally. Enabled by default.
   final bool enableShowcase;
 
+  /// Builder that builds the end showcase button, he can be Positioned
+  final Widget Function(VoidCallback endShowCase)? endShowCaseButtonBuilder;
+
   const ShowCaseWidget({
     required this.builder,
     this.onFinish,
@@ -98,12 +101,20 @@ class ShowCaseWidget extends StatefulWidget {
     this.enableAutoScroll = false,
     this.disableBarrierInteraction = false,
     this.enableShowcase = true,
+    this.endShowCaseButtonBuilder,
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<_InheritedShowCaseView>()
         ?.activeWidgetIds;
+  }
+
+  static Widget Function(VoidCallback endShowCase)? getEndShowCaseButtonBuilder(
+      BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<_InheritedShowCaseView>()
+        ?.endShowCaseButtonBuilder;
   }
 
   static ShowCaseWidgetState of(BuildContext context) {
@@ -235,6 +246,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   @override
   Widget build(BuildContext context) {
     return _InheritedShowCaseView(
+      endShowCaseButtonBuilder: widget.endShowCaseButtonBuilder,
       activeWidgetIds: ids?.elementAt(activeWidgetId!),
       child: widget.builder,
     );
@@ -243,10 +255,12 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
 class _InheritedShowCaseView extends InheritedWidget {
   final GlobalKey? activeWidgetIds;
+  final Widget Function(VoidCallback endShowCase)? endShowCaseButtonBuilder;
 
   const _InheritedShowCaseView({
     required this.activeWidgetIds,
     required Widget child,
+    this.endShowCaseButtonBuilder,
   }) : super(child: child);
 
   @override
