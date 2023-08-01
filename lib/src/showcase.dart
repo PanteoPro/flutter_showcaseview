@@ -489,6 +489,14 @@ class _ShowcaseState extends State<Showcase> {
 
     return Stack(
       children: [
+        Positioned(
+          right: 20,
+          top: 20,
+          child: ElevatedButton(
+            onPressed: showCaseWidgetState.dismiss,
+            child: const Text('Закончить обучение'),
+          ),
+        ),
         GestureDetector(
           onTap: () {
             if (!showCaseWidgetState.disableBarrierInteraction) {
