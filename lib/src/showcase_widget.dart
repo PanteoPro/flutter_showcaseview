@@ -87,7 +87,7 @@ class ShowCaseWidget extends StatefulWidget {
   final Widget Function(VoidCallback endShowCase)? endShowCaseButtonBuilder;
 
   /// Builder that builds the next showcase button, he can be Positioned
-  final Widget Function(VoidCallback endShowCase)? nextShowCaseButtonBuilder;
+  final Widget Function(VoidCallback nextShowCase)? nextShowCaseButtonBuilder;
 
   const ShowCaseWidget({
     required this.builder,
