@@ -473,6 +473,9 @@ class _ShowcaseState extends State<Showcase> {
   Widget Function(void Function())? get endShowCaseButtonBuilder =>
       ShowCaseWidget.getEndShowCaseButtonBuilder(context);
 
+  Widget Function(void Function())? get nextShowCaseButtonBuilder =>
+      ShowCaseWidget.getNextShowCaseButtonBuilder(context);
+
   Widget buildOverlayOnTarget(
     Offset offset,
     Size size,
@@ -533,6 +536,8 @@ class _ShowcaseState extends State<Showcase> {
         ),
         if (endShowCaseButtonBuilder != null)
           endShowCaseButtonBuilder!.call(showCaseWidgetState.dismiss),
+        if (nextShowCaseButtonBuilder != null)
+          nextShowCaseButtonBuilder!.call(showCaseWidgetState.next),
         if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
         if (!_isScrollRunning) ...[
           _TargetWidget(

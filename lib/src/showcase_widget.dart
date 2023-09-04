@@ -86,6 +86,9 @@ class ShowCaseWidget extends StatefulWidget {
   /// Builder that builds the end showcase button, he can be Positioned
   final Widget Function(VoidCallback endShowCase)? endShowCaseButtonBuilder;
 
+  /// Builder that builds the next showcase button, he can be Positioned
+  final Widget Function(VoidCallback endShowCase)? nextShowCaseButtonBuilder;
+
   const ShowCaseWidget({
     required this.builder,
     this.onFinish,
@@ -102,6 +105,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.disableBarrierInteraction = false,
     this.enableShowcase = true,
     this.endShowCaseButtonBuilder,
+    this.nextShowCaseButtonBuilder,
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
@@ -115,6 +119,13 @@ class ShowCaseWidget extends StatefulWidget {
     return context
         .dependOnInheritedWidgetOfExactType<_InheritedShowCaseView>()
         ?.endShowCaseButtonBuilder;
+  }
+
+  static Widget Function(VoidCallback nextShowCase)?
+      getNextShowCaseButtonBuilder(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<_InheritedShowCaseView>()
+        ?.nextShowCaseButtonBuilder;
   }
 
   static ShowCaseWidgetState of(BuildContext context) {
@@ -247,6 +258,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
   Widget build(BuildContext context) {
     return _InheritedShowCaseView(
       endShowCaseButtonBuilder: widget.endShowCaseButtonBuilder,
+      nextShowCaseButtonBuilder: widget.nextShowCaseButtonBuilder,
       activeWidgetIds: ids?.elementAt(activeWidgetId!),
       child: widget.builder,
     );
@@ -256,11 +268,13 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 class _InheritedShowCaseView extends InheritedWidget {
   final GlobalKey? activeWidgetIds;
   final Widget Function(VoidCallback endShowCase)? endShowCaseButtonBuilder;
+  final Widget Function(VoidCallback nextShowCase)? nextShowCaseButtonBuilder;
 
   const _InheritedShowCaseView({
     required this.activeWidgetIds,
     required Widget child,
     this.endShowCaseButtonBuilder,
+    this.nextShowCaseButtonBuilder,
   }) : super(child: child);
 
   @override
