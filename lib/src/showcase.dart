@@ -534,10 +534,6 @@ class _ShowcaseState extends State<Showcase> {
                   ),
           ),
         ),
-        if (endShowCaseButtonBuilder != null)
-          endShowCaseButtonBuilder!.call(showCaseWidgetState.dismiss),
-        if (nextShowCaseButtonBuilder != null)
-          nextShowCaseButtonBuilder!.call(showCaseWidgetState.next),
         if (_isScrollRunning) Center(child: widget.scrollLoadingWidget),
         if (!_isScrollRunning) ...[
           _TargetWidget(
@@ -585,6 +581,10 @@ class _ShowcaseState extends State<Showcase> {
             descriptionTextDirection: widget.descriptionTextDirection,
           ),
         ],
+        if (endShowCaseButtonBuilder != null)
+          endShowCaseButtonBuilder!.call(showCaseWidgetState.dismiss),
+        if (nextShowCaseButtonBuilder != null)
+          nextShowCaseButtonBuilder!.call(showCaseWidgetState.next),
       ],
     );
   }
