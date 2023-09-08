@@ -351,7 +351,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       _scaleAnimationController.reverse();
     }
 
-    final left = _getLeft() != null ? _getLeft()! - 200 : null;
+    final left =
+        _getLeft() != null ? _getLeft()! - (widget.contentWidth ?? 27) : null;
     final right = _getLeft() != null ? _getLeft()! - 27 : null;
 
     if (widget.container == null) {
