@@ -236,7 +236,7 @@ class _MailPageState extends State<MailPage> {
                             title: 'Profile',
                             tooltipPosition: TooltipPosition.left,
                             description:
-                                "Tap to see profile which contains user's name, profile picture, mobile number and country",
+                                "Tap to see profile which contains user's name, profile picture, mobile number and country,Tap to see profile which contains user's name, profile picture, mobile number and country,Tap to see profile which contains user's name, profile picture, mobile number and country,Tap to see profile which contains user's name, profile picture, mobile number and country",
                             tooltipBackgroundColor:
                                 Theme.of(context).primaryColor,
                             textColor: Colors.white,

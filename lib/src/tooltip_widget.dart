@@ -204,11 +204,13 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     return null;
   }
 
-  double? _getLeftForHorizontal() {
+  double? _getLeftForHorizontal(double maxWidthText) {
     if (widget.position != null) {
-      final width =
-          widget.container != null ? _customContainerWidth.value : tooltipWidth;
+      final width = widget.container != null
+          ? _customContainerWidth.value
+          : getTooltipWidth(maxWidthText);
       double leftPositionValue = widget.position!.getLeft() - width;
+      print('leftPositionValue - ${leftPositionValue}');
       if ((leftPositionValue + width) > MediaQuery.of(context).size.width) {
         return null;
       } else if ((leftPositionValue) < _kDefaultPaddingFromParent) {
@@ -436,7 +438,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     return titleHeight + descHeight;
   }
 
-  double getTooltipWidth() {
+  double getTooltipWidth([double? maxWidth]) {
     final titleStyle = widget.titleTextStyle ??
         Theme.of(context)
             .textTheme
@@ -449,18 +451,19 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             .merge(TextStyle(color: widget.textColor));
     final titleLength = widget.title == null
         ? 0.0
-        : _textSize(widget.title!, titleStyle).width +
+        : _textSize(widget.title!, titleStyle, maxWidth).width +
             widget.tooltipPadding!.right +
             widget.tooltipPadding!.left +
             (widget.titlePadding?.right ?? 0) +
             (widget.titlePadding?.left ?? 0);
     final descriptionLength = widget.description == null
         ? 0.0
-        : (_textSize(widget.description!, descriptionStyle).width +
+        : (_textSize(widget.description!, descriptionStyle, maxWidth).width +
             widget.tooltipPadding!.right +
             widget.tooltipPadding!.left +
             (widget.descriptionPadding?.right ?? 0) +
             (widget.descriptionPadding?.left ?? 0));
+    tooltipWidth = max(titleLength, descriptionLength);
     return max(titleLength, descriptionLength);
   }
 
@@ -513,7 +516,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       contentOffsetMultiplier = 0;
       final paddingRight = isArrowUp ? 0 : 27.0;
       final paddingLeft = isArrowUp ? 22.0 : 0;
-      left = _getLeftForHorizontal()! - paddingRight - paddingLeft;
+      left = _getLeftForHorizontal(
+              widget.position!.getLeft() - paddingRight - paddingLeft - 30)! -
+          paddingRight -
+          paddingLeft;
       right = 0;
       paddingTop = 0;
       paddingBottom = 0;
@@ -700,13 +706,13 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     setState(() => position = tempPos);
   }
 
-  Size _textSize(String text, TextStyle style) {
+  Size _textSize(String text, TextStyle style, [double? maxWidth]) {
     final textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       maxLines: 1,
       textScaleFactor: MediaQuery.of(context).textScaleFactor,
       textDirection: TextDirection.ltr,
-    )..layout();
+    )..layout(maxWidth: maxWidth ?? double.infinity);
     return textPainter.size;
   }
 
