@@ -351,11 +351,14 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       _scaleAnimationController.reverse();
     }
 
+    final left = _getLeft() != null ? _getLeft()! - 200 : null;
+    final right = _getLeft() != null ? _getLeft()! - 27 : null;
+
     if (widget.container == null) {
       return Positioned(
         top: contentY,
-        left: _getLeft(),
-        right: _getRight(),
+        left: left ?? _getLeft(),
+        right: right ?? _getRight(),
         child: ScaleTransition(
           scale: _scaleAnimation,
           alignment: widget.scaleAnimationAlignment ??
