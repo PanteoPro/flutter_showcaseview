@@ -189,8 +189,8 @@ class _MailPageState extends State<MailPage> {
                                             key: _one,
                                             description:
                                                 'Tap to see menu options',
-                                            tooltipPosition:
-                                                TooltipPosition.bottom,
+                                            // tooltipPosition:
+                                            //     TooltipPosition.left,
                                             disableDefaultTargetGestures: true,
                                             disableMovingAnimation: true,
                                             onBarrierClick: () =>
