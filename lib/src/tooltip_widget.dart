@@ -115,7 +115,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   double tooltipScreenEdgePadding = 20;
   double tooltipTextPadding = 15;
 
-  TooltipPosition findPositionForContent(Offset position) {
+  TooltipPosition findPositionForContentVertical(Offset position) {
     var height = 120.0;
     height = widget.contentHeight ?? height;
     final bottomPosition =
@@ -134,6 +134,25 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         (hasSpaceInTop && !hasSpaceInBottom
             ? TooltipPosition.top
             : TooltipPosition.bottom);
+  }
+
+  TooltipPosition findPositionForContentHorizontal(Offset position) {
+    var width = 120.0;
+    width = widget.contentWidth ?? tooltipWidth;
+    final leftPosition = position.dx;
+    final rightPosition = position.dx + (widget.position?.getWidth() ?? 0);
+    final hasSpaceInRight = rightPosition >= width;
+    final EdgeInsets viewInsets = EdgeInsets.fromWindowPadding(
+        WidgetsBinding.instance.window.viewInsets,
+        WidgetsBinding.instance.window.devicePixelRatio);
+    final double actualVisibleScreenWidth =
+        (widget.screenSize?.width ?? MediaQuery.of(context).size.width) -
+            viewInsets.left;
+    final hasSpaceInLeft = (actualVisibleScreenWidth - leftPosition) >= width;
+    return widget.tooltipPosition ??
+        (hasSpaceInRight && !hasSpaceInLeft
+            ? TooltipPosition.right
+            : TooltipPosition.left);
   }
 
   void _getTooltipWidth() {
@@ -395,7 +414,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   Widget build(BuildContext context) {
     // TODO: maybe all this calculation doesn't need to run here. Maybe all or some of it can be moved outside?
     position = widget.offset;
-    final contentOrientation = findPositionForContent(position!);
+    final contentOrientation = findPositionForContentVertical(position!);
+    final contentOrientationHorizontal =
+        findPositionForContentHorizontal(position!);
+    print('contentOrientationHorizontal - ${contentOrientationHorizontal}');
     final contentOffsetMultiplier =
         contentOrientation == TooltipPosition.bottom ? 1.0 : -1.0;
     isArrowUp = contentOffsetMultiplier == 1.0;
@@ -428,14 +450,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
     final top =
         _getTopPosition() != null ? _getTopPosition()! - paddingTop : contentY;
-    print('left - $left');
-    print('top - ${top}');
 
     if (widget.container == null) {
       return Positioned(
         top: top,
-        left: left ?? _getLeft(),
-        right: right ?? _getRight(),
+        left: _getLeft(),
+        right: _getRight(),
         child: ScaleTransition(
           scale: _scaleAnimation,
           alignment: widget.scaleAnimationAlignment ??
@@ -607,7 +627,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       maxLines: 1,
       textScaleFactor: MediaQuery.of(context).textScaleFactor,
       textDirection: TextDirection.ltr,
-    )..layout(maxWidth: 300);
+    )..layout();
     return textPainter.size;
   }
 
