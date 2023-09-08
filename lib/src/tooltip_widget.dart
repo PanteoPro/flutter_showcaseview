@@ -151,8 +151,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final hasSpaceInLeft = (actualVisibleScreenWidth - leftPosition) >= width;
     return widget.tooltipPosition ??
         (hasSpaceInRight && !hasSpaceInLeft
-            ? TooltipPosition.right
-            : TooltipPosition.left);
+            ? TooltipPosition.left
+            : TooltipPosition.right);
   }
 
   void _getTooltipWidth() {
@@ -453,7 +453,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
     if (widget.container == null) {
       return Positioned(
-        top: top,
+        top: contentY,
         left: _getLeft(),
         right: _getRight(),
         child: ScaleTransition(
