@@ -607,7 +607,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       maxLines: 1,
       textScaleFactor: MediaQuery.of(context).textScaleFactor,
       textDirection: TextDirection.ltr,
-    )..layout();
+    )..layout(maxWidth: 300);
     return textPainter.size;
   }
 
