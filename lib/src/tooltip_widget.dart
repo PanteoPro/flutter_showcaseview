@@ -173,7 +173,25 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     if (widget.position != null) {
       final width =
           widget.container != null ? _customContainerWidth.value : tooltipWidth;
-      double leftPositionValue = widget.position!.getCenter() - (width * 0.5);
+      double leftPositionValue = widget.position!.getXCenter() - (width * 0.5);
+      if ((leftPositionValue + width) > MediaQuery.of(context).size.width) {
+        return null;
+      } else if ((leftPositionValue) < _kDefaultPaddingFromParent) {
+        return _kDefaultPaddingFromParent;
+      } else {
+        print(
+            'leftPosition - dsa dsam dfoidsjf opdsajf oipdsajopf dsjak $leftPositionValue');
+        return leftPositionValue;
+      }
+    }
+    return null;
+  }
+
+  double? _getLeftForHorizontal() {
+    if (widget.position != null) {
+      final width =
+          widget.container != null ? _customContainerWidth.value : tooltipWidth;
+      double leftPositionValue = widget.position!.getLeft() - width;
       if ((leftPositionValue + width) > MediaQuery.of(context).size.width) {
         return null;
       } else if ((leftPositionValue) < _kDefaultPaddingFromParent) {
@@ -192,7 +210,26 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
 
       final left = _getLeft();
       if (left == null || (left + width) > MediaQuery.of(context).size.width) {
-        final rightPosition = widget.position!.getCenter() + (width * 0.5);
+        final rightPosition = widget.position!.getXCenter() + (width * 0.5);
+
+        return (rightPosition + width) > MediaQuery.of(context).size.width
+            ? _kDefaultPaddingFromParent
+            : null;
+      } else {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  double? _getRightForHorizontal() {
+    if (widget.position != null) {
+      final width =
+          widget.container != null ? _customContainerWidth.value : tooltipWidth;
+
+      final left = _getLeft();
+      if (left == null || (left + width) > MediaQuery.of(context).size.width) {
+        final rightPosition = widget.position!.getXCenter() + width;
 
         return (rightPosition + width) > MediaQuery.of(context).size.width
             ? _kDefaultPaddingFromParent
@@ -205,7 +242,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   }
 
   double _getSpace() {
-    var space = widget.position!.getCenter() - (widget.contentWidth! / 2);
+    var space = widget.position!.getXCenter() - (widget.contentWidth! / 2);
     if (space + widget.contentWidth! > widget.screenSize!.width) {
       space = widget.screenSize!.width - widget.contentWidth! - 8;
     } else if (space < (widget.contentWidth! / 2)) {
@@ -218,9 +255,9 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final calculatedLeft = _getLeft();
     var left = calculatedLeft == null
         ? 0
-        : (widget.position!.getCenter() - calculatedLeft);
+        : (widget.position!.getXCenter() - calculatedLeft);
     var right = _getLeft() == null
-        ? (MediaQuery.of(context).size.width - widget.position!.getCenter()) -
+        ? (MediaQuery.of(context).size.width - widget.position!.getXCenter()) -
             (_getRight() ?? 0)
         : 0;
     final containerWidth =
@@ -320,6 +357,40 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     super.dispose();
   }
 
+  double? _getTopPosition() {
+    if (widget.position?.getYCenter() == null) return null;
+    final titleStyle = widget.titleTextStyle ??
+        Theme.of(context)
+            .textTheme
+            .titleLarge!
+            .merge(TextStyle(color: widget.textColor));
+    final descriptionStyle = widget.descTextStyle ??
+        Theme.of(context)
+            .textTheme
+            .titleSmall!
+            .merge(TextStyle(color: widget.textColor));
+    var descHeight = widget.description == null
+        ? 0
+        : _textSize(widget.description!, descriptionStyle).height +
+            widget.tooltipPadding!.top +
+            widget.tooltipPadding!.bottom +
+            (widget.titlePadding?.top ?? 0) +
+            (widget.titlePadding?.bottom ?? 0);
+    var titleHeight = widget.title == null
+        ? 0
+        : _textSize(widget.title!, titleStyle).height +
+            widget.tooltipPadding!.top +
+            widget.tooltipPadding!.bottom +
+            (widget.titlePadding?.top ?? 0) +
+            (widget.titlePadding?.bottom ?? 0);
+
+    // print('widget.position!.getBottom(); - ${widget.position!.getBottom()}');
+    // print('widget.position!.getTop(); - ${widget.position!.getTop()}');
+    // print('widget.position!.getYCenter(); - ${widget.position!.getYCenter()}');
+
+    return widget.position!.getYCenter() - titleHeight / 2 - descHeight / 2;
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: maybe all this calculation doesn't need to run here. Maybe all or some of it can be moved outside?
@@ -351,13 +422,18 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       _scaleAnimationController.reverse();
     }
 
-    final left =
-        _getLeft() != null ? _getLeft()! - (widget.contentWidth ?? 27) : null;
-    final right = _getLeft() != null ? _getLeft()! - 27 : null;
+    final left = _getLeftForHorizontal();
+    final right =
+        widget.position!.getLeft(); //_getLeft() != null ? _getLeft()! : null;
+
+    final top =
+        _getTopPosition() != null ? _getTopPosition()! - paddingTop : contentY;
+    print('left - $left');
+    print('top - ${top}');
 
     if (widget.container == null) {
       return Positioned(
-        top: contentY,
+        top: top,
         left: left ?? _getLeft(),
         right: right ?? _getRight(),
         child: ScaleTransition(
@@ -538,12 +614,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
   double? _getArrowLeft(double arrowWidth) {
     final left = _getLeft();
     if (left == null) return null;
-    return (widget.position!.getCenter() - (arrowWidth / 2) - left);
+    return (widget.position!.getXCenter() - (arrowWidth / 2) - left);
   }
 
   double? _getArrowRight(double arrowWidth) {
     if (_getLeft() != null) return null;
-    return (MediaQuery.of(context).size.width - widget.position!.getCenter()) -
+    return (MediaQuery.of(context).size.width - widget.position!.getXCenter()) -
         (_getRight() ?? 0) -
         (arrowWidth / 2);
   }

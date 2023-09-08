@@ -146,155 +146,175 @@ class _MailPageState extends State<MailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: <Widget>[
-            const SizedBox(
-              height: 20,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 10, right: 8),
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xffF9F9F9),
-                            border: Border.all(
-                              color: const Color(0xffF3F3F3),
-                              width: 2,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
+    return MouseRegion(
+      onHover: (event) => print(event.position),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          bottom: false,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 500),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 8),
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xffF9F9F9),
+                                  border: Border.all(
+                                    color: const Color(0xffF3F3F3),
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                                 child: Row(
                                   children: <Widget>[
-                                    Showcase(
-                                      key: _one,
-                                      description: 'Tap to see menu options',
-                                      disableDefaultTargetGestures: true,
-                                      onBarrierClick: () =>
-                                          debugPrint('Barrier clicked'),
-                                      child: GestureDetector(
-                                        onTap: () =>
-                                            debugPrint('menu button clicked'),
-                                        child: Icon(
-                                          Icons.menu,
-                                          color: Theme.of(context).primaryColor,
-                                        ),
+                                    Expanded(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Showcase(
+                                            key: _one,
+                                            description:
+                                                'Tap to see menu options',
+                                            tooltipPosition:
+                                                TooltipPosition.bottom,
+                                            disableDefaultTargetGestures: true,
+                                            disableMovingAnimation: true,
+                                            onBarrierClick: () =>
+                                                debugPrint('Barrier clicked'),
+                                            child: GestureDetector(
+                                              onTap: () => debugPrint(
+                                                  'menu button clicked'),
+                                              child: Icon(
+                                                Icons.menu,
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          const Text(
+                                            'Search email',
+                                            style: TextStyle(
+                                              color: Colors.black45,
+                                              fontSize: 16,
+                                              letterSpacing: 0.4,
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          const Icon(
+                                            Icons.search,
+                                            color: Color(0xffADADAD),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    const Text(
-                                      'Search email',
-                                      style: TextStyle(
-                                        color: Colors.black45,
-                                        fontSize: 16,
-                                        letterSpacing: 0.4,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    const Icon(
-                                      Icons.search,
-                                      color: Color(0xffADADAD),
                                     ),
                                   ],
                                 ),
                               ),
-                            ],
+                            ),
+                          ),
+                          Showcase(
+                            disableMovingAnimation: true,
+                            // tooltipPosition: TooltipPosition.bottom,
+                            key: _two,
+                            title: 'Profile',
+                            description:
+                                "Tap to see profile which contains user's name, profile picture, mobile number and country",
+                            tooltipBackgroundColor:
+                                Theme.of(context).primaryColor,
+                            textColor: Colors.white,
+                            targetShapeBorder: const CircleBorder(),
+                            child: Container(
+                              padding: const EdgeInsets.all(5),
+                              width: 45,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              child: Image.asset('assets/simform.png'),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(left: 16, top: 4),
+                        child: const Text(
+                          'PRIMARY',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    ),
-                    Showcase(
-                      targetPadding: const EdgeInsets.all(5),
-                      key: _two,
-                      title: 'Profile',
-                      description:
-                          "Tap to see profile which contains user's name, profile picture, mobile number and country",
-                      tooltipBackgroundColor: Theme.of(context).primaryColor,
-                      textColor: Colors.white,
-                      targetShapeBorder: const CircleBorder(),
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        width: 45,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        child: Image.asset('assets/simform.png'),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 16, top: 4),
-                  child: const Text(
-                    'PRIMARY',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                    ],
+                  ),
+                  const Padding(padding: EdgeInsets.only(top: 8)),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return showcaseMailTile(
+                              _three, true, context, mails.first);
+                        }
+                        return MailTile(
+                          mail: mails[index % mails.length],
+                        );
+                      },
                     ),
                   ),
-                ),
-              ],
-            ),
-            const Padding(padding: EdgeInsets.only(top: 8)),
-            Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return showcaseMailTile(_three, true, context, mails.first);
-                  }
-                  return MailTile(
-                    mail: mails[index % mails.length],
-                  );
-                },
+                ],
               ),
             ),
-          ],
+          ),
         ),
-      ),
-      floatingActionButton: Showcase(
-        key: _five,
-        title: 'Compose Mail',
-        description: 'Click here to compose mail',
-        targetShapeBorder: const CircleBorder(),
-        child: FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
-          onPressed: () {
-            setState(() {
-              /* reset ListView to ensure that the showcased widgets are
-               * currently rendered so the showcased keys are available in the
-               * render tree. */
-              scrollController.jumpTo(0);
-              ShowCaseWidget.of(context)
-                  .startShowCase([_one, _two, _three, _four, _five]);
-            });
-          },
-          child: const Icon(
-            Icons.add,
+        floatingActionButton: Showcase(
+          key: _five,
+          tooltipPosition: TooltipPosition.bottom,
+          disableMovingAnimation: true,
+          title: 'Compose Mail',
+          description: 'Click here to compose mail',
+          targetShapeBorder: const CircleBorder(),
+          child: FloatingActionButton(
+            backgroundColor: Theme.of(context).primaryColor,
+            onPressed: () {
+              setState(() {
+                /* reset ListView to ensure that the showcased widgets are
+                 * currently rendered so the showcased keys are available in the
+                 * render tree. */
+                scrollController.jumpTo(0);
+                ShowCaseWidget.of(context)
+                    .startShowCase([_one, _two, _three, _four, _five]);
+              });
+            },
+            child: const Icon(
+              Icons.add,
+            ),
           ),
         ),
       ),
@@ -316,8 +336,9 @@ class _MailPageState extends State<MailPage> {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Showcase(
             key: key,
+            disableMovingAnimation: true,
             description: 'Tap to check mail',
-            tooltipPosition: TooltipPosition.top,
+            tooltipPosition: TooltipPosition.bottom,
             disposeOnTap: true,
             onTargetClick: () {
               Navigator.push<void>(
@@ -413,6 +434,8 @@ class MailTile extends StatelessWidget {
               children: <Widget>[
                 if (showCaseDetail)
                   Showcase.withWidget(
+                    disableMovingAnimation: true,
+                    tooltipPosition: TooltipPosition.bottom,
                     key: showCaseKey!,
                     height: 50,
                     width: 140,

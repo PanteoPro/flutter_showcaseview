@@ -99,5 +99,6 @@ class GetPosition {
 
   double getWidth() => getRight() - getLeft();
 
-  double getCenter() => (getLeft() + getRight()) / 2;
+  double getXCenter() => (getLeft() + getRight()) / 2;
+  double getYCenter() => (getTop() + getBottom()) / 2;
 }
