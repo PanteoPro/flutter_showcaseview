@@ -189,8 +189,8 @@ class _MailPageState extends State<MailPage> {
                                             key: _one,
                                             description:
                                                 'Tap to see menu options',
-                                            // tooltipPosition:
-                                            //     TooltipPosition.left,
+                                            tooltipPosition:
+                                                TooltipPosition.left,
                                             disableDefaultTargetGestures: true,
                                             disableMovingAnimation: true,
                                             onBarrierClick: () =>
@@ -234,6 +234,7 @@ class _MailPageState extends State<MailPage> {
                             // tooltipPosition: TooltipPosition.bottom,
                             key: _two,
                             title: 'Profile',
+                            tooltipPosition: TooltipPosition.left,
                             description:
                                 "Tap to see profile which contains user's name, profile picture, mobile number and country",
                             tooltipBackgroundColor:
@@ -295,7 +296,7 @@ class _MailPageState extends State<MailPage> {
         ),
         floatingActionButton: Showcase(
           key: _five,
-          tooltipPosition: TooltipPosition.bottom,
+          tooltipPosition: TooltipPosition.left,
           disableMovingAnimation: true,
           title: 'Compose Mail',
           description: 'Click here to compose mail',
@@ -338,7 +339,7 @@ class _MailPageState extends State<MailPage> {
             key: key,
             disableMovingAnimation: true,
             description: 'Tap to check mail',
-            tooltipPosition: TooltipPosition.bottom,
+            tooltipPosition: TooltipPosition.left,
             disposeOnTap: true,
             onTargetClick: () {
               Navigator.push<void>(

@@ -198,8 +198,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       } else if ((leftPositionValue) < _kDefaultPaddingFromParent) {
         return _kDefaultPaddingFromParent;
       } else {
-        print(
-            'leftPosition - dsa dsam dfoidsjf opdsajf oipdsajopf dsjak $leftPositionValue');
         return leftPositionValue;
       }
     }
@@ -510,19 +508,20 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       right = _getRight();
       top = contentY;
     } else {
-      print('hello');
       arrowWidth = 9.0;
       arrowHeight = 18.0;
-      left = _getLeftForHorizontal();
-      right =
-          widget.position!.getLeft(); //_getLeft() != null ? _getLeft()! : null;
-      top = 0;
       contentOffsetMultiplier = 0;
+      final paddingRight = isArrowUp ? 0 : 27.0;
+      final paddingLeft = isArrowUp ? 22.0 : 0;
+      left = _getLeftForHorizontal()! - paddingRight - paddingLeft;
+      right = 0;
       paddingTop = 0;
       paddingBottom = 0;
-      //  top =
-      //     _getTopPosition() != null ? _getTopPosition()! - paddingTop : contentY;
+      top = _getTopPosition() != null ? _getTopPosition()! - paddingTop : 0;
     }
+
+    print('left - $left');
+    print('right - $right');
 
     final num contentFractionalOffset =
         contentOffsetMultiplier.clamp(-1.0, 0.0);
@@ -551,8 +550,12 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                 child: Container(
                   padding: widget.showArrow
                       ? EdgeInsets.only(
-                          top: paddingTop - (isArrowUp ? arrowHeight : 0),
-                          bottom: paddingBottom - (isArrowUp ? 0 : arrowHeight),
+                          top: paddingTop != 0
+                              ? paddingTop - (isArrowUp ? arrowHeight : 0)
+                              : 0,
+                          bottom: paddingBottom != 0
+                              ? paddingBottom - (isArrowUp ? 0 : arrowHeight)
+                              : 0,
                         )
                       : null,
                   child: Stack(
@@ -744,6 +747,11 @@ class _Arrow extends CustomPainter {
   }
 
   Path getTrianglePath(double x, double y) {
+    // return Path()
+    //   ..moveTo(0, 0)
+    //   ..lineTo(x, y / 2)
+    //   ..lineTo(0, y)
+    //   ..lineTo(0, 0);
     if (isUpArrow) {
       return Path()
         ..moveTo(0, y)
