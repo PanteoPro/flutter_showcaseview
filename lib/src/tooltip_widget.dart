@@ -388,20 +388,37 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
             .textTheme
             .titleSmall!
             .merge(TextStyle(color: widget.textColor));
-    var descHeight = widget.description == null
-        ? 0
-        : _textSize(widget.description!, descriptionStyle).height +
-            widget.tooltipPadding!.top +
-            widget.tooltipPadding!.bottom +
-            (widget.titlePadding?.top ?? 0) +
-            (widget.titlePadding?.bottom ?? 0);
-    var titleHeight = widget.title == null
-        ? 0
-        : _textSize(widget.title!, titleStyle).height +
-            widget.tooltipPadding!.top +
-            widget.tooltipPadding!.bottom +
-            (widget.titlePadding?.top ?? 0) +
-            (widget.titlePadding?.bottom ?? 0);
+    final double descHeight;
+    if (widget.description == null) {
+      descHeight = 0;
+    } else {
+      double resultHeight = 0;
+      final lines = widget.description!.split('\n');
+      for (final line in lines) {
+        resultHeight += _textSize(line, descriptionStyle).height;
+      }
+      resultHeight += widget.tooltipPadding!.top +
+          widget.tooltipPadding!.bottom +
+          (widget.descriptionPadding?.top ?? 0) +
+          (widget.descriptionPadding?.bottom ?? 0);
+      descHeight = resultHeight;
+    }
+
+    final double titleHeight;
+    if (widget.title == null) {
+      titleHeight = 0;
+    } else {
+      double resultHeight = 0;
+      final lines = widget.title!.split('\n');
+      for (final line in lines) {
+        resultHeight += _textSize(line, titleStyle).height;
+      }
+      resultHeight += widget.tooltipPadding!.top +
+          widget.tooltipPadding!.bottom +
+          (widget.titlePadding?.top ?? 0) +
+          (widget.titlePadding?.bottom ?? 0);
+      titleHeight = resultHeight;
+    }
 
     // print('widget.position!.getBottom(); - ${widget.position!.getBottom()}');
     // print('widget.position!.getTop(); - ${widget.position!.getTop()}');
@@ -523,7 +540,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       right = 0;
       paddingTop = 0;
       paddingBottom = 0;
-      top = _getTopPosition() != null ? _getTopPosition()! - paddingTop : 0;
+      top = _getTopPosition() != null ? _getTopPosition()! : 0;
     }
 
     print('left - $left');
