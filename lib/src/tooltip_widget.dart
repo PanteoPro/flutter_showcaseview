@@ -210,7 +210,6 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
           ? _customContainerWidth.value
           : getTooltipWidth(maxWidthText);
       double leftPositionValue = widget.position!.getLeft() - width;
-      print('leftPositionValue - ${leftPositionValue}');
       if ((leftPositionValue + width) > MediaQuery.of(context).size.width) {
         return null;
       } else if ((leftPositionValue) < _kDefaultPaddingFromParent) {
@@ -492,7 +491,13 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final contentOrientationHorizontal =
         findPositionForContentHorizontal(position!);
 
-    final double? left, right, top;
+    final Alignment alignmentStack;
+    final bool isVerticalArrow;
+    final double? left, right, top, arrowLeft, arrowRight, arrowTop;
+    double paddingLeftForArrow = 0,
+        paddingTopForArrow = 0,
+        paddingRightForArrow = 0,
+        paddingBottomForArrow = 0;
     final double contentOffsetMultiplier,
         paddingTop,
         paddingBottom,
@@ -500,6 +505,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
         arrowHeight;
     if ([TooltipPosition.bottom, TooltipPosition.top]
         .contains(contentOrientation)) {
+      isVerticalArrow = true;
       contentOffsetMultiplier =
           contentOrientation == TooltipPosition.bottom ? 1.0 : -1.0;
 
@@ -520,6 +526,10 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       arrowWidth = 18.0;
       arrowHeight = 9.0;
 
+      arrowLeft = _getArrowLeft(arrowWidth);
+      arrowRight = _getArrowRight(arrowWidth);
+      arrowTop = null;
+
       if (!widget.disableScaleAnimation && widget.isTooltipDismissed) {
         _scaleAnimationController.reverse();
       }
@@ -527,7 +537,16 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       left = _getLeft();
       right = _getRight();
       top = contentY;
+
+      alignmentStack = isArrowUp
+          ? Alignment.topLeft
+          : _getLeft() == null
+              ? Alignment.bottomRight
+              : Alignment.bottomLeft;
+      paddingTopForArrow = isArrowUp ? arrowHeight - 1 : 0;
+      paddingBottomForArrow = isArrowUp ? 0 : arrowHeight - 1;
     } else {
+      isVerticalArrow = false;
       arrowWidth = 9.0;
       arrowHeight = 18.0;
       contentOffsetMultiplier = 0;
@@ -540,11 +559,18 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       right = MediaQuery.of(context).size.width - left - tooltipWidth;
       paddingTop = 0;
       paddingBottom = 0;
+      arrowLeft = tooltipWidth - arrowWidth + 1;
+      arrowRight = 0;
+      arrowTop = null;
+
       top = _getTopPosition() != null ? _getTopPosition()! : 0;
+      alignmentStack = isArrowUp ? Alignment.centerRight : Alignment.centerLeft;
+      paddingLeftForArrow = isArrowUp ? arrowWidth - 1 : 0;
+      paddingRightForArrow = isArrowUp ? 0 : arrowWidth - 1;
     }
 
-    print('left - $left');
-    print('right - $right');
+    // print('left - $left');
+    // print('right - $right');
 
     final num contentFractionalOffset =
         contentOffsetMultiplier.clamp(-1.0, 0.0);
@@ -553,7 +579,11 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
       return Positioned(
         top: top,
         left: left,
-        right: right,
+        right: isVerticalArrow
+            ? right
+            : right != null
+                ? right - arrowWidth
+                : null,
         child: ScaleTransition(
           scale: _scaleAnimation,
           alignment: widget.scaleAnimationAlignment ??
@@ -582,33 +612,14 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                         )
                       : null,
                   child: Stack(
-                    alignment: isArrowUp
-                        ? Alignment.topLeft
-                        : _getLeft() == null
-                            ? Alignment.bottomRight
-                            : Alignment.bottomLeft,
+                    alignment: alignmentStack,
                     children: [
-                      if (widget.showArrow)
-                        Positioned(
-                          left: _getArrowLeft(arrowWidth),
-                          right: _getArrowRight(arrowWidth),
-                          child: CustomPaint(
-                            painter: _Arrow(
-                              strokeColor: widget.tooltipBackgroundColor!,
-                              strokeWidth: 10,
-                              paintingStyle: PaintingStyle.fill,
-                              isUpArrow: isArrowUp,
-                            ),
-                            child: SizedBox(
-                              height: arrowHeight,
-                              width: arrowWidth,
-                            ),
-                          ),
-                        ),
                       Padding(
                         padding: EdgeInsets.only(
-                          top: isArrowUp ? arrowHeight - 1 : 0,
-                          bottom: isArrowUp ? 0 : arrowHeight - 1,
+                          top: paddingTopForArrow,
+                          bottom: paddingBottomForArrow,
+                          left: paddingLeftForArrow,
+                          right: paddingRightForArrow,
                         ),
                         child: ClipRRect(
                           borderRadius: widget.tooltipBorderRadius ??
@@ -669,6 +680,25 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
                           ),
                         ),
                       ),
+                      if (widget.showArrow)
+                        Positioned(
+                          top: arrowTop,
+                          left: arrowLeft,
+                          right: arrowRight,
+                          child: CustomPaint(
+                            painter: _Arrow(
+                              strokeColor: widget.tooltipBackgroundColor!,
+                              strokeWidth: 10,
+                              paintingStyle: PaintingStyle.fill,
+                              isUpArrow: isArrowUp,
+                              isVerticalArrow: isVerticalArrow,
+                            ),
+                            child: SizedBox(
+                              height: arrowHeight,
+                              width: arrowWidth,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -752,6 +782,7 @@ class _Arrow extends CustomPainter {
   final PaintingStyle paintingStyle;
   final double strokeWidth;
   final bool isUpArrow;
+  final bool isVerticalArrow;
   final Paint _paint;
 
   _Arrow({
@@ -759,6 +790,7 @@ class _Arrow extends CustomPainter {
     this.strokeWidth = 3,
     this.paintingStyle = PaintingStyle.stroke,
     this.isUpArrow = true,
+    this.isVerticalArrow = true,
   }) : _paint = Paint()
           ..color = strokeColor
           ..strokeWidth = strokeWidth
@@ -766,15 +798,25 @@ class _Arrow extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas.drawPath(getTrianglePath(size.width, size.height), _paint);
+    canvas.drawPath(getTrianglePath(size.width, size.height), _paint..color);
   }
 
   Path getTrianglePath(double x, double y) {
-    // return Path()
-    //   ..moveTo(0, 0)
-    //   ..lineTo(x, y / 2)
-    //   ..lineTo(0, y)
-    //   ..lineTo(0, 0);
+    if (!isVerticalArrow) {
+      if (isUpArrow) {
+        return Path()
+          ..moveTo(0, 0)
+          ..lineTo(x, y / 2)
+          ..lineTo(0, y)
+          ..lineTo(0, 0);
+      } else {
+        return Path()
+          ..moveTo(0, 0)
+          ..lineTo(x, y / 2)
+          ..lineTo(0, y)
+          ..lineTo(0, 0);
+      }
+    }
     if (isUpArrow) {
       return Path()
         ..moveTo(0, y)
