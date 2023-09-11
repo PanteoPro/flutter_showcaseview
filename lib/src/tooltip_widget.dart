@@ -537,7 +537,7 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
               widget.position!.getLeft() - paddingRight - paddingLeft - 30)! -
           paddingRight -
           paddingLeft;
-      right = 0;
+      right = MediaQuery.of(context).size.width - left - tooltipWidth;
       paddingTop = 0;
       paddingBottom = 0;
       top = _getTopPosition() != null ? _getTopPosition()! : 0;

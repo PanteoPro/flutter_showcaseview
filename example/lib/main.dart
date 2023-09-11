@@ -68,7 +68,8 @@ class _MailPageState extends State<MailPage> {
     //NOTE: remove ambiguate function if you are using
     //flutter version greater than 3.x and direct use WidgetsBinding.instance
     ambiguate(WidgetsBinding.instance)?.addPostFrameCallback(
-      (_) => ShowCaseWidget.of(context).startShowCase([_three, _four, _five]),
+      (_) => ShowCaseWidget.of(context)
+          .startShowCase([_one, _two, _three, _four, _five]),
     );
     mails = [
       Mail(
